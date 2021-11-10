@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Gruson-CV</title>
+
+		<link rel="shortcut icon" type="image/png" href="images/favicon.png">
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<!-- <link rel="stylesheet" href="dist/theme/blood.css"> -->
+		<link rel="stylesheet" href="dist/theme/OWN.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<!-- <link rel="shortcut icon" type="image/png" href="favicon.png"> -->
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section id="Home" data-background-video="videos/example.mp4"
+          data-background-video-loop="True" data-background-video-muted="True" data-transition="zoom">
+					<h2>Craft: Facial Authentification</h2>
+					<p>with laptop locking</p>
+					<p>with voice assistant</p>
+					<p>(on MacOS)</p>
+					<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/Gruz77"><img data-src="images/github_full_logo.png" width=10% height=10% ></a></p>
+					<!-- <p></p><small>Using facial reco lib <a target="_blank" rel="noopener noreferrer"
+						href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html">linkage</a></small></p>
+					<p></p><small>Quick </small>
+					<p></p><small>Press space for starting</small> -->
+					<br>
+					<br>
+					<br>
+					<p style="position:absolute; left:15vw; top:-2.5vh"><a class="page-scroll"
+							href="https://gruz77.github.io/#presentations"><img class="r-stretch" width="33" height="37"
+								data-src="images/cross_logo.png"></a></p>
+				</section>
+				<section data-transition="zoom-in concave-out">
+					<h2>Facial recognition</h2>
+					<br>
+					<ul>
+						<li>
+							Using the simple library <a target="_blank" rel="noopener noreferrer" href="https://github.com/ageitgey/face_recognition">face_recognition</a>
+							<ul>
+								<li>
+									Transfer learning from <a target="_blank" rel="noopener noreferrer"
+										href="http://dlib.net/">dlib</a> C++ pretrained CNN ($99.38\%$ on LFW benchmark)
+								</li>
+								<li>
+									Output face encoding in a 128D array $F$
+								</li>
+								<li>
+									Match if euclidian norm below threshold ($0.6$)
+									$$\text{If} \hspace{0.2cm} \exists i \in [1,\text{nb_known_faces}], \hspace{0.2cm} ||F_i - F_{test}||_{2} \leq 0.6$$
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section data-transition="concave">
+					<h2>Laptop locking</h2>
+					<br>
+					<ul>
+						<li>
+							Using Applescript elvish command,
+						</li>
+						<li>
+							The following python code locks the laptop (macOS):
+						</li>
+					</ul>
+					<pre><code data-line-numbers="2">import os
+os.system("osascript -e 'tell app \"loginwindow\" to «event aevtrlgo»'")
+					</code></pre>
+					<ul>
+						<li>
+							Adapt the time before locking/unlocking (3s default)
+						</li>
+					</ul>
+				</section>
+				<section data-transition="concave">
+					<h2>Voice assistant</h2>
+					<ul>
+						<li>
+						Using the simple offline TTS library <a target="_blank" rel="noopener noreferrer"
+							href="https://github.com/nateshmbhat/pyttsx3">pyttsx3</a>
+						</li>
+						<li>
+							As easy as:
+						</li>
+					</ul>
+					<pre><code data-line-numbers="0">import pyttsx3
+engine = pyttsx3.init()
+engine.say("Now, I can speak.")
+engine.runAndWait()</code></pre>
+				</section>
+				<section data-transition="concave">
+					<h2>Quick app</br><small>With <a target="_blank" rel="noopener noreferrer"
+							href="https://support.apple.com/fr-ne/guide/automator/welcome/mac">Automator</a></small></h2>
+					<ul>
+						<li>
+							Create app from shell script:
+						</li>
+						<p>
+							<img class="r-stretch" src="images/automator.png" height="60%" width="60%" style="margin-left:20%">
+						</p>
+					</ul>
+				</section>
+				<section data-transition="concave">
+					<h2>Task Manager</br><small>With <a target="_blank" rel="noopener noreferrer"
+						href="https://apps.apple.com/us/app/eventscripts/id525319418?mt=12">EventScripts</a></small></h2>
+					<ul>
+						<li>
+							Launch the app every time your laptop unlocks (or whenever you want).
+						</li>
+						<p>
+							<img class="r-stretch" src="images/event_scripts.png" height="60%" width="60%" style="margin-left:20%">
+						</p>
+					</ul>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				center: true,
+				width: "100%",
+				height: "100%",
+				transition: 'slide',  // none/fade/slide/concave/convex/zoom  even fade-in slide-out for example
+				transistionSpeed: 'default', // default/fast/slow
+				backgroundTransition: 'fade', // none/fade/slide/concave/convex/zoom
+				// We can make the configuration here
+				// Learn about plugins: https://revealjs.com/plugins/
+				math: {
+					mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
+					config: 'TeX-AMS_HTML-full',
+					// pass other options into `MathJax.Hub.Config()`
+					TeX: { Macros: { RR: "{\\bf R}" } }
+				},
+				plugins: [ RevealMarkdown, RevealHighlight,
+				RevealNotes, RevealMath ]
+			});
+		</script>
+	</body>
+</html>

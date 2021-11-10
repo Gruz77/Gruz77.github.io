@@ -1,0 +1,1613 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Gruson-CV</title>
+
+		<link rel="shortcut icon" type="image/png" href="images/favicon.png">
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<!-- <link rel="stylesheet" href="dist/theme/blood.css"> -->
+		<link rel="stylesheet" href="dist/theme/OWN.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<!-- <link rel="shortcut icon" type="image/png" href="favicon.png"> -->
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section id="Theory">
+					<h2>Portfolio Optimization</h2><br>
+					Internship main project <br>2021
+					<br><br
+					<p></p><small>Optimized for full screen: please press <img data-src="images/f_button.png" width=25 height=25 style="margin:0 0 0 0"></small></p>
+					<p></p><small>Plots are interactive</small>
+					<p></p><small>Press space for starting</small>
+					<p style="position:absolute; left:15vw; top:-2.5vh"><a class="page-scroll"
+							href="https://gruz77.github.io/#presentations"><img class="r-stretch" width="33" height="37"
+								data-src="images/cross_logo.png"></a></p>
+				</section>
+				<section>
+					<!-- <h3 style="position:fixed;left:680px;bottom:550px">Aim</h3> -->
+					<h3>Aim</h3>
+					<ul>
+						<li>Find optimal portfolios over <b>in-sample</b> (IS) time interval</li>
+						<li>Apply weights to <b>out-of-sample</b> (OoS) returns
+						<li>Walk-forward optimization:</li>
+						<p>
+							<img class="r-stretch" src="images/Walk_Forward_Optim.png" height="60%" width="60%" style="margin-left:20%">
+						</p>
+						<li>Weekly rebalancing here</li>
+						<li>Compare with Equally-Weighted (EW) portfolio</li>
+					</ul>
+					<p style="position:absolute; left:15vw; top:-2.5vh"><a class="page-scroll"
+							href="https://gruz77.github.io/#presentations"><img class="r-stretch" width="33" height="37"
+								data-src="images/cross_logo.png"></a></p>
+				</section>
+				<section data-transition="slide-in zoom-out" id="Home">
+					<h3>Table of contents</h3>
+					<table>
+						<thead style="font-size:30px">
+							<tr>
+								<th style="text-align:center" colspan="3">Process Data</th>
+							</tr>
+						</thead>
+						<tbody style="font-size:25px" >
+							<tr>
+								<th style="text-align:center"><a href="#/Data">Data</a></th>
+								<th style="text-align:center"><a href="#/Rebalancing">Rebalancing</a></th>
+								<th style="text-align:center"><a href="#/Outsamplereturns">Out-sample returns</a></th>
+							</tr>
+						</tbody>
+					</table>
+					<p></p>
+					<table>
+						<thead style="font-size:30px">
+							<tr>
+								<th style="text-align:center" colspan="3">Methods</th>
+							</tr>
+						</thead>
+						<tbody style="font-size:25px">
+							<tr>
+								<th style="text-align:center"><a href="#/Markowitz">Markowitz</a></th>
+								<th style="text-align:center"><a href="#/SRM">Spectral Risk Measures</a></th>
+								<th style="text-align:center"><a href="#/Hierarchical_methods">Hierarchical Clustering methods</a></th>
+							</tr>
+						</tbody>
+					</table>
+					<p></p>
+					<table>
+						<thead style="font-size:30px">
+							<tr>
+								<th style="text-align:center" colspan="2">Additional</th>
+							</tr>
+						</thead>
+						<tbody style="font-size:25px">
+							<tr>
+								<th style="text-align:center"><a href="#/Exp_cov">Exponential Covariance</a></th>
+								<th style="text-align:center"><a href="#/Shrinkages">Shrinkage & Denoising</a></th>
+							</tr>
+						</tbody>
+					</table>
+					<p></p>
+					<table>
+						<thead style="font-size:30px">
+							<tr>
+								<th style="text-align:center" colspan="5">Guidelines/Previews</th>
+							</tr>
+						</thead>
+						<tbody style="font-size:25px">
+							<tr>
+								<th style="text-align:center"><a data-transition="zoom" href="#/Walk_forward_optim">Walk-forward optimization</a></th>
+								<th style="text-align:center"><a href="#/Methods_params">Methods parameters</a></th>
+								<th style="text-align:center"><a href="#/Constraints">Constraints</a></th>
+								<th style="text-align:center"><a href="#/Stats_out_sample">Statistiques Out-Sample</a></th>
+								<th style="text-align:center"><a href="#/Intuitions">Intuitions</a></th>
+							</tr>
+						</tbody>
+					</table>
+					<p></p>
+					<table>
+						<thead style="font-size:30px">
+							<tr>
+								<th style="text-align:center" colspan="5">Results</th>
+							</tr>
+						</thead>
+						<tbody style="font-size:25px">
+							<tr>
+								<th style="text-align:center"><a href="#/Perfs">Performances</a></th>
+								<th style="text-align:center"><a href="#/Turnovers">Turnovers</a></th>
+								<th style="text-align:center"><a href="#/Box_plots">Box-plots</a></th>
+								<th style="text-align:center"><a href="#/Selection">$4$ Strats Study</a></th>
+								<th style="text-align:center"><a href="#/Boosting">"Boosting"</a></th>
+							</tr>
+						</tbody>
+					</table>
+					<table>
+						<thead style="font-size:30px">
+							<tr>
+								<th style="text-align:center" colspan="3">Ending</th>
+							</tr>
+						</thead>
+						<tbody style="font-size:25px">
+							<tr>
+								<th style="text-align:center"><a href="#/Ideas">Go Further / Ideas</a></th>
+								<th style="text-align:center"><a href="#/Implem_details">Implementation details</a></th>
+								<th style="text-align:center"><a href="#/Biblio">Bibliography</a></th>
+							</tr>
+						</tbody>
+					</table>
+					<!-- <table>
+						<thead>
+							<tr>
+								<th colspan="4">Data</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="text-align:center">Data</td>
+								<td style="text-align:center">Rebalancement</td>
+								<td style="text-align:center">Resample</td>
+								<td style="text-align:center">Out-sample returns</td>
+							</tr>
+							<tr>
+								<td style="text-align:center">Markowitz</td>
+								<td style="text-align:center">Spectral Risk Measures</td>
+								<td style="text-align:center">Hierarchical Clustering methods</td>
+								<td style="text-align:center">Out-sample returns</td>
+							</tr>
+							<tr>
+								<td style="text-align:center">Exponential Covariance</td>
+								<td style="text-align:center">Shrinkages & Denoising</td>>
+							</tr>
+							<tr>
+								<td style="text-align:center">Walk-forward optimization</td>
+								<td style="text-align:center">Methods Summary</td>>
+								<td style="text-align:center">Statistics out-sample</td>
+								<td style="text-align:center">Constraints</td>>
+							</tr>
+							<tr>
+								<td style="text-align:center">Results</td>
+							</tr>
+						</tbody>
+					</table> -->
+					<p style="position:absolute; left:15vw; top:-2.5vh"><a class="page-scroll" href="https://gruz77.github.io/#presentations"><img class="r-stretch"
+								width="33" height="37" data-src="images/cross_logo.png"></a></p>
+				</section>
+				<section data-transition="zoom-in concave-out">
+					<section id="Data">
+						<h3>Data</h3>
+						<ul>
+							<li>Fund Strategies:
+								<ul>
+									<li> Cumulated P&L time series from <a target="_blank" rel="noopener noreferrer" href="https://quantpedia.com/risk-parity-asset-allocation/#:~:text=Na%C3%AFve%20risk%20parity%20or%20na%C3%AFve,each%20asset%20is%20the%20same.">naïve risk parity</a> allocation </li>
+									<li>
+										Daily from 02/2007 to 06/2021
+									</li>
+									<li>
+										9 strats aggregated (ex: Bonds Trend, Carry commodities)
+									</li>
+								</ul>
+							</li>
+							<br>
+							<li> <b>log-returns</b> are used:
+							$$\tilde{r_{t}} = \log{(1 + r_{t})} \hspace{1cm} \text{with} \hspace{1cm} r_{t} = \frac{PnL_{t} - PnL_{t-1}}{AUM_t}$$
+							</li>
+							<li>
+								$X \in M_{T, N}(\mathbb{R})$ our daily log-return matrix ($T$: number of days, $N$: number of assets)
+							</li>
+							<a href="#" class="navigate-down">
+								<img class="r-frame" style="background: rgba(255,255,255,0.1); margin-top:5%; margin-left:47%" width="70" height="100"
+									data-src="https://static.slid.es/reveal/arrow.png" alt="Notes">
+							</a>
+						</ul>
+						<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37" data-src="images/home_logo.png"></a></p>
+					</section>
+					<section>
+						<ul>
+							<li>
+								\[\begin{equation}
+									\log{(1 + x)} \approx x \hspace{1cm} \text{for small} \hspace{0.3cm} x
+								\end{equation} \]
+							</li>
+							<li>
+								Fund strategies are not detailed for confidentiality reasons
+							</li>
+						</ul>
+					</section>
+				</section>
+				<section id="Rebalancing" data-transition="concave">
+					<h3>Rebalancing rules</h3>
+					<br>
+					<ul>
+						<li>
+							Weekly (can be changed)
+						</li>
+						<br>
+						<li>
+							In-sample windows always end on <b>Friday</b>
+						</li>
+						<br>
+						<li>
+							Gap of two days before rebalancing (practical purpose)
+						</li>
+						<br>
+						<li style="color: red;">
+							Weights are shifted: in order to avoid look-ahead bias
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section id="Resample" data-transition="concave">
+					<section>
+						<h3>Resample</h3>
+						<br>
+						<ul>
+							<li>
+								Resample  (daily $\rightarrow$ weekly) assets returns every <b>Tuesday</b>
+							</li>
+							<br>
+							<li>Using:
+								\[\begin{equation}
+								\tilde{r}_{week} = \underset{t=Wed}{\overset{Tues}{\sum}}\tilde{r_{t}} =
+								\underset{t=Wed}{\overset{Tues}{\sum}}\log{(1+r_{t})}
+								\end{equation} \]
+							</li>
+							<br>
+							<li>
+								See remarks below
+							</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>In general:
+								\[\begin{aligned}
+								r_{t}^{gen} = \frac{p_t - p_{t-1}}{p_{t-1}} = \frac{p_t}{p_{t-1}} - 1 \\
+								\text{so} \hspace{1cm} r_{week}^{gen} = \frac{p_{Tues}}{p_{Tues^{-}}} - 1 = \underset{t=Wed}{\overset{Tues}{\prod}}(1 + r_t) - 1 &amp; =  e^{\log{\left(\underset{t=Wed}{\overset{Tues}{\prod}}(1 + r_t)\right)}} - 1 \\
+								&amp;  = e^{\tilde{r}_{week}} - 1
+								\end{aligned} \]
+							</li>
+							<li>But here:
+								\[\begin{equation}
+								r_{week} = \frac{PnL_{Tues} - PnL_{Tues^{-}}}{AUM} = \underset{t=Wed}{\overset{Tues}{\sum}}r_{t}
+								\end{equation} \]
+							</li>
+						</ul>
+					</section>
+				</section>
+				<section data-transition="concave-in slide-out" id="Outsamplereturns">
+					<h3>Out-Sample Returns</h3>
+					<ul>
+						<li>
+							$$R_{OS} = \left[\underset{i=1}{\overset{N}{\sum}}\left(w_{t}^{[i]}r_{t+1}^{[i]}\right)\right]_{t=0,...,T-1}^{T}$$
+						</li>
+						<!-- t \in [0,T-1] -->
+					</ul>
+					<br>
+					<table style="display: inline-block; font-size:28px">
+						<thead>
+							<tr>
+								<th style="text-align:center" colspan="3">$W_{opt}$</th>
+							</tr>
+						</thead>
+						<thead>
+							<tr>
+								<th style="text-align:center; vertical-align:middle">Date<br>In-Sample</th>
+								<th style="text-align:center; vertical-align:middle">Asset$_1$</th>
+								<th style="text-align:center; vertical-align:middle">Asset$_2$</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="text-align:center; vertical-align:middle">09/02/2007 - 11/01/2008</td>
+								<td style="text-align:center; vertical-align:middle">$w_{0}^{[1]}$</td>
+								<td style="text-align:center; vertical-align:middle">$w_{0}^{[2]}$</td>
+							</tr>
+						<tbody>
+							<tr>
+								<td style="text-align:center; vertical-align:middle">16/02/2007 - 18/01/2008</td>
+								<td style="text-align:center; vertical-align:middle">$w_{1}^{[1]}$</td>
+								<td style="text-align:center; vertical-align:middle">$w_{1}^{[2]}$</td>
+							</tr>
+						</tbody>
+						<tbody>
+							<tr>
+								<th colspan="3" style="text-align:center; vertical-align:middle">...</th>
+							</tr>
+						</tbody>
+						<!-- <tbody>
+							<tr>
+								<td style="text-align:center; vertical-align:middle">16/02/2007 - 18/01/2008</td>
+								<td style="text-align:center; vertical-align:middle">$w_{1}^{1}$</td>
+								<td style="text-align:center; vertical-align:middle">$w_{1}^{2}$</td>
+							</tr>
+						</tbody> -->
+					</table>
+					<!-- <p style="display:inline-block">
+						<img class="r-stretch" src="images/Schema_shift.png" height="150%" width="150%" style="margin-left:20%; margin-top:10%; transform:translateY(80%)">
+					</p> -->
+					<table style="display: inline-block; font-size:28px; margin-left:5%; vertical-align:top">
+						<thead>
+							<tr>
+								<th style="text-align:center" colspan="3">$X_{weekly}$</th>
+							</tr>
+						</thead>
+						<thead>
+							<tr>
+								<th style="text-align:center; vertical-align:middle">Date<br>(Tuesday)</th>
+								<th style="text-align:center; vertical-align:middle">Asset$_1$</th>
+								<th style="text-align:center; vertical-align:middle">Asset$_2$</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<s><td style="text-align:center; vertical-align:middle"><s>15/01/2008</s></td></s>
+								<td style="text-align:center; vertical-align:middle"><s>$r_{0}^{[1]}$</s></td>
+								<td style="text-align:center; vertical-align:middle"><s>$r_{0}^{[2]}$</s></td>
+							</tr>
+						<tbody>
+							<tr>
+								<td style="text-align:center; vertical-align:middle">22/01/2008</td>
+								<td style="text-align:center; vertical-align:middle">$r_{1}^{[1]}$</td>
+								<td style="text-align:center; vertical-align:middle">$r_{1}^{[2]}$</td>
+							</tr>
+						</tbody>
+						<tbody>
+							<tr>
+								<th colspan="3" style="text-align:center; vertical-align:middle">...</th>
+							</tr>
+						</tbody>
+					</table>
+					<li style="display:block; font-size:28px">
+						$$r_{OS}^{22/01/2008} = w_{0}^{[1]} \times r_{1}^{[1]} + w_{0}^{[2]} \times r_{1}^{[2]}$$
+					</li>
+					<p style="display:block; font-size:28px">
+						15/01/2008: weekly return from Wednesday 09/01/2008 <font style="color:red">($\in$ [09/02/2007,11/01/2008])</font>
+					</p>
+					<p style="display:block; font-size:28px">
+						22/01/2008: weekly return from Wednesday 16/01/2008 <font style="color:green">($\notin$ [09/02/2007,11/01/2008])</font>
+					</p>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="concave-out slide-in" id="Markowitz">
+					<h3>Markowitz</h3>
+					<table>
+						<thead>
+							<tr>
+								<th style="text-align:center">Max-Sharpe</th>
+								<th style="text-align:center">Min-Variance</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="text-align:center">$$\underset{w \in \Omega}{max} \left( \frac{\mathbb{E}[R_{P}] - r_f}{\sigma_{P}}\right)$$</td>
+								<td style="text-align:center">$$\underset{w \in \Omega}{min} \left(w\Sigma w^{T}\right)$$</td>
+							</tr>
+						</tbody>
+					</table>
+					<p style="text-align:left; margin-left:100px">With:</p>
+					<ul>
+						<li>
+							$\sigma_{P} = \sqrt{w\Sigma w^{T}}$ the portfolio volatility and $\Sigma$ the covariance matrix
+						</li>
+						<li>
+							$R_{P} = Xw^{T}$ the portfolio daily log-returns, with $X \in M_{T, N}(\mathbb{R})$
+						</li>
+						<li>
+							$\mathbb{E}[R_{P}]$ the expected return (mean in-sample...)
+						</li>
+						<li>
+							$r_f = 0$ the risk-free rate
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="concave" id="SRM">
+					<section>
+						<h3>Spectral Risk Measures</h3>
+						$$M_{\phi}(R_{P}) = - \int_{0}^{1}\phi(p)F_{R_{P}}^{-1}(p)\mathrm{d}p$$
+						<table>
+							<thead>
+								<tr>
+									<th style="text-align:center">Min-CVaR $\alpha\%$</th>
+									<th style="text-align:center">"Min-Power" $\alpha \%$</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="text-align:center">$$\underset{w \in \Omega}{min} \left( - \frac{1}{\alpha}\int_{0}^{\alpha}F_{R_{P}}^{-1}(p)\mathrm{d}p\right)$$</td>
+									<td style="text-align:center">$$\underset{w \in \Omega}{min} \left( - \frac{1}{\alpha}\int_{0}^{1}(1-p)^{\frac{1}{\alpha}-1}F_{R_{P}}^{-1}(p)\mathrm{d}p\right)$$</td>
+								</tr>
+							</tbody>
+						</table>
+						<p style="text-align:left; margin-left:100px">With:</p>
+						<ul>
+							<li>
+								$R_{P} = Xw^{T}$ the portfolio daily log-returns, with $X \in M_{T, N}(\mathbb{R})$
+							</li>
+							<li>
+								$F_{R_{P}}^{-1}(p)$ the quantile function, $p \in [0, 1]$
+							</li>
+							<li>
+								$\phi(p)$ the risk-aversion function
+							</li>
+						</ul>
+						<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+									data-src="images/home_logo.png"></a></p>
+					</section>
+					<section>
+						<h4>SRM weighting comparison</h4>
+						<iframe data-src="html_plots/CVar_Power.html" style="height:100vh; width:100vw; margin-left:22vw; margin-top:5vh" data-preload></iframe>
+					</section>
+				</section>
+				<section data-transition="concave-in zoom-out" id="Hierarchical_methods">
+					<h3>Hierarchical Clustering Methods</h3>
+					<ul>
+						<li><p style="text-align:left;">1 - Create distance matrix from similarity matrix, $\forall (i,j) \in [1,N]^{2}$:</p>
+							<!-- <ul>
+								<li>
+									Correlation matrix: $ \hspace{1cm} \rho_{i,j} \in [-1,1] \longrightarrow d_{i,j} = \sqrt{\frac{1}{2}(1 - \rho_{i,j})}$
+								</li>
+								<li>
+									"CVaR" matrix: $ \hspace{1cm} c_{i,j}=\frac{CVaR(R_i + R_j)}{CVaR(R_i) + CVaR(R_j)} \in [0,1] \longrightarrow d_{i,j} = \sqrt{(1 -
+									c_{i,j})}$
+								</li>
+							</ul> -->
+						</li>
+						<table>
+							<thead>
+								<tr>
+									<th style="text-align:center">Correlation<small>(Pearson)</small></th>
+									<th style="text-align:center">"CVaR" matrix</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="text-align:center">$\rho_{i,j} \in [-1,1]$</td>
+									<td style="text-align:center">$c_{i,j}=\frac{CVaR(R_i + R_j)}{CVaR(R_i) + CVaR(R_j)} \in [0,1]$</td>
+								</tr>
+							</tbody>
+							<tbody>
+								<tr>
+									<td style="text-align:center">$d_{i,j} = \sqrt{\frac{1}{2}(1 - \rho_{i,j})}$</td>
+									<td style="text-align:center">$d_{i,j} = \sqrt{(1 -
+									c_{i,j})}$</td>
+								</tr>
+							</tbody>
+						</table>
+						<li>
+							2 - Select a <a target="_blank" rel="noopener noreferrer"
+								href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html">linkage</a> method (all but <i>median</i> and <i>weighted</i> here)
+						</li>
+						<li>
+							3 - Matrix quasi-diagonalisation (see next slide)
+						</li>
+						<li>
+							4 - Recursion (iterative allocation)
+						</li>
+					</ul>
+					<table>
+						<thead>
+							<tr>
+								<th style="text-align:center" colspan="3">Methods</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="text-align:center"><a href="#/HRP"> HRP</a></td>
+								<td style="text-align:center"><a href="#/HARP"> HARP</a></td>
+								<td style="text-align:center"><a href="#/HCP"> HCP</a></td>
+							</tr>
+						</tbody>
+					</table>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="zoom-in concave-out">
+					<section>
+						<h3>Ex: clustering with correlation matrix</h3>
+						<iframe data-src="html_plots/clustering_ex_correl.html" style="position:relative; height:100vh; width:100vw; margin-bottom: 50vh; transform: translateY(-5%); margin-left:15vw" data-preload></iframe>
+						</section>
+					<section>
+						<h3>Ex: clustering with "CVaR" matrix</h3>
+						<iframe data-src="html_plots/clustering_ex_cvar.html"
+							style="position:relative; height:100vh; width:100vw; margin-bottom: 50vh; transform: translateY(-5%); margin-left:15vw"
+							data-preload></iframe>
+						</section>
+				</section>
+				<section data-transition="concave" id="Recursion">
+					<h3>Recursions</h3>
+					<ul>
+						<li>
+							Bisection (De Prado's method): split subset into two parts recursively
+							<ul>
+								<li>
+									Avoids portfolio concentration
+								</li>
+								<li>
+									But can affect asset to wrong cluster
+								</li>
+								<li>
+									Less dramatic when there are more assets in the portfolio
+								</li>
+							</ul>
+						</li>
+						<li>
+							"Topdown": Respect of the dendrogram hierarchy
+						</li>
+						<li>
+							Ex for the first iteration:
+						</li>
+					</ul>
+					<p>
+						<img class="r-stretch" src="images/Topdown_Bisection.png" height="30%" width="30%">
+					</p>
+				</section>
+				<section data-transition="concave" data-auto-animate id="HRP">
+					<h3>Hierarchical Risk Parity (HRP)<br><small>(De Prado's method) <a target="_blank" rel="noopener noreferrer"
+						href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2708678">[paper]</a></small></h3>
+					<ul>
+						<li>
+							Pseudo-code:
+						</li>
+						<ul>
+							<li>
+								Initialise the weight vector $w = \mathbb{1} = [1,...,1]$
+							</li>
+							<li>
+								For each recursion iteration:
+							</li>
+							<ul>
+								<li>
+									For $V_1$, $V_2$ cluster $1$ and cluster $2$ variance (inverse variance portfolio)
+								</li>
+								<li>
+									$\alpha_1 = 1 - \frac{V_1}{V_1 + V_2}$ and $\alpha_2 = 1 - \alpha_1$
+								</li>
+								<li>
+									$w_{cluster_1}: = w_{cluster_1} \times \alpha_1$
+								</li>
+								<li>
+									$w_{cluster_2}: = w_{cluster_2} \times \alpha_2$
+								</li>
+							</ul>
+						</ul>
+					</ul>
+				</section>
+				<section data-transition="concave" id="HARP">
+					<section data-auto-animate>
+						<h3>Hierarchical <font style="color:red">Alpha</font> Risk Parity (HARP)</h3>
+						<ul>
+							<li>
+								Pseudo-code:
+							</li>
+							<ul>
+								<li>
+									Initialise the weight vector $w = \mathbb{1} = [1,...,1]$
+								</li>
+								<li>
+									For each recursion iteration:
+								</li>
+								<ul>
+									<li>
+										For $V_1$, $V_2$ cluster $1$ and cluster $2$ variance (inverse variance portfolio)
+									</li>
+									<li style="color:red">
+										For $\bar{R_1}$, $\bar{R_2}$ cluster $1$ and cluster $2$ score return (mean of assets score)
+									</li>
+									<li>
+										$\alpha_1 = 1 - \frac{V_1}{V_1 + V_2}$ and $\alpha_2 = 1 - \alpha_1$
+									</li>
+									<li style="color:red">
+										$\beta_1 = \frac{\bar{R_1}}{\bar{R_1} + \bar{R_2}}$ and $\beta_2 = 1 - \beta_1$
+									</li>
+									<li>
+										$w_{cluster_1}: = w_{cluster_1} \times $(<font style="color:red">$\lambda$</font>$\alpha_1$<font style="color:red">$ + (1 - \lambda)\beta_1$</font>) $\hspace{0.4cm}$ <font style="color:red">$\lambda$</font>: risk-aversion parameter ($=0.5$)
+									</li>
+									<li>
+										$w_{cluster_2}: = w_{cluster_2} \times $(<font style="color:red">$\lambda$</font>$\alpha_2$<font style="color:red">$ +(1 - \lambda)\beta_2$</font>)
+									</li>
+								</ul>
+							</ul>
+						</ul>
+					</section>
+					<section id="IV_port">
+						<h3>Inverse-Variance Portfolio</h3>
+						$$\underset{w \in \Omega}{min} \left(w\Sigma w^{T} \right)
+						\hspace{0.5cm} u.c \hspace{0.5cm} w^{T}\mathbb{1} = 1$$
+						<table>
+							<thead>
+								<tr>
+									<th style="text-align:center">Optimal (Min-Variance)</th>
+									<th style="text-align:center">If $\Sigma$ is diagonal</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="text-align:center">$w_{MV} = \frac{\Sigma^{-1}\mathbb{1}}{\mathbb{1}^{T}\Sigma\mathbb{1}}$
+									</td>
+									<td style="text-align:center">$w_{MV} = w_{IV} = \frac{diag\left[\Sigma\right]^{-1}}{tr\left[
+										diag\left[\Sigma\right]^{-1}\right]}$ and $w_{i} =
+										\frac{\Sigma^{-1}_{i,i}}{\underset{j=1}{\overset{N}{\sum}}\Sigma^{-1}_{j,j}}$</td>
+								</tr>
+							</tbody>
+						</table>
+						<ul>
+							<li>
+								When $N=2$ assets: $w_1 = \frac{\frac{1}{\Sigma_{1,1}}}{\frac{1}{\Sigma_{1,1}} + \frac{1}{\Sigma_{2,2}}} = 1
+								- \frac{\Sigma_{1,1}}{\Sigma_{1,1} + \Sigma_{2,2}}$
+							</li>
+							<li>
+								HRP logic is back
+							</li>
+							<li>
+								Note: in HRP the cluster variance is $V = \tilde{w}\tilde{\Sigma}\tilde{w}^{T}$ where $\tilde{\Sigma}$ is the
+								<br>subset (cluster) covariance and $\tilde{w} = \frac{diag\left[\tilde{\Sigma}\right]^{-1}}{tr\left[
+								diag\left[\tilde{\Sigma}\right]^{-1}\right]}$
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Returns (asset mean in-sample) to score</h3>
+						<ul>
+							<li>
+								Logistic rescale preferred to a MinMaxScaler: $\hspace{0.5cm} l_{rank} = \frac{1}{1 + e^{-(a\times rank + b)}}$
+							</li>
+							<li>
+								Penalizes the lower ranked and boosts the higher ranked
+							</li>
+						</ul>
+						<iframe data-src="html_plots/logistic_rescale.html" style="position:relative; height:100vh; width:100vw; margin-left:17vw; margin-top:5vh" data-preload></iframe>
+					</section>
+				</section>
+				<section data-transition="concave-in slide-out" id="HCP">
+					<h3>Hierarchical Clustering Portfolio (HCP)<br><small><a target="_blank" rel="noopener noreferrer"
+						href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2840729">[paper]</a></small></h3>
+					<ul>
+						<li>
+							"Hierarchical Equally-Weighted portfolio", straightforward
+						</li>
+						<li>
+							Favours non-correlated assets
+						</li>
+						<li>
+							Only topdown recursion
+						</li>
+					</ul>
+					<p style="margin-top:-2%"><img class="r-stretch" src="images/HCP_ex.png" height="40%" width='40%'></p>
+				</section>
+				<section data-transition="slide-in concave-out">
+					<section id="Exp_cov">
+						<h3>Exponential Covariance <a style="font-size:40px" target="_blank" rel="noopener noreferrer"
+								href="https://reasonabledeviations.com/2018/08/15/exponential-covariance/">[link]</a></h3>
+						<ul>
+							<li>
+								More interest in recent observations
+							</li>
+							<li>
+								Standard ($\forall (i,j) \in [1,N]^{2}$): $$Cov(R^{[i]}, R^{[j]}) = \frac{1}{T-1}\underset{t=1}{\overset{T}{\sum}}\left( r^{[i]}_{t} - \bar{R}^{[i]} \right)\left( r^{[j]}_{t} - \bar{R}^{[j]} \right)$$
+							</li>
+							<li>
+								Exponential: $$Cov_{exp}(R^{[i]}, R^{[j]}) = \frac{\alpha}{T-1}\underset{t=1}{\overset{T}{\sum}}(1 - \alpha)^{t-1}\left( r^{[i]}_{t} - \bar{R}^{[i]}
+								\right)\left( r^{[j]}_{t} - \bar{R}^{[j]} \right)$$
+							</li>
+							<li>
+								$(r_1^{[i]}, r_1^{[j]})$ the more recent observations
+							</li>
+						</ul>
+						<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+									data-src="images/home_logo.png"></a></p>
+					</section>
+					<section>
+						<ul>
+							<li>
+								Same for in-sample $\mathbb{E}[R_P]$ (instead of standard mean)
+							</li>
+							<li>$\alpha \in [0, 1]$
+								<ul>
+									<li>
+										higher $\alpha \rightarrow$ more interest in recent obs
+									</li>
+									<li>
+										lower $\alpha \rightarrow$ tend to arithmetic mean
+									</li>
+								</ul>
+							</li>
+							<li>
+								Consistent coeffs distribution: $\alpha = \frac{5}{T}$ ($T$: nb days in-sample)
+							</li>
+							<li>
+								Ex:
+							</li>
+							<iframe data-src="html_plots/exp_cov_ex.html" width="1100" height="400" style="margin:0 0 0 200px" data-preload></iframe>
+						</ul>
+					</section>
+				</section>
+				<section data-transition="concave-in slide-out" id="Shrinkages">
+					<section>
+						<h3>Covariance Shrinkage/Denoising</h3>
+						<br><br>
+						<ul>
+							<li>
+								Ledoit-Wolf (LW) <a target="_blank" rel="noopener noreferrer"
+									href="https://scikit-learn.org/stable/modules/generated/sklearn.covariance.LedoitWolf.html">[link]</a> (source code modified for exp. cov)
+							</li>
+							<br>
+							<li>
+								Oracle Approximation Shrinkage (OAS) <a target="_blank" rel="noopener noreferrer"
+									href="https://scikit-learn.org/stable/modules/generated/sklearn.covariance.OAS.html">[link]</a> (source
+								code modified for exp. cov)
+							</li>
+							<br>
+							<li>
+								Denoising (Random Matrix Theory, see below)
+							</li>
+							<br>
+							<li>
+								Denoising Target Shrinkage (see below)
+							</li>
+						</ul>
+						<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+									data-src="images/home_logo.png"></a></p>
+					</section>
+					<section>
+						<h3>Random Matrix Theory</h3>
+						<ul>
+							<li>
+								Let $X \in M_{T, N}(\mathbb{R})$ be the observation matrix of a process with zero mean and variance $\sigma^{2}$
+							</li>
+							<li>
+								$C = \frac{1}{T}X^{T}X$ eigenvalues converge asymptotically ($T \rightarrow +\infty$ and $N \rightarrow +\infty$) to the Marcenko-Pastur distribution
+								\[
+								f(\lambda) =
+								\begin{cases}
+								\frac{T}{N}\frac{\sqrt{(\lambda_{+} - \lambda)(\lambda - \lambda_{-})}}{2\pi\lambda\sigma^{2}} & \text{if $\lambda \in [\lambda_{-}, \lambda_{+}]$} \\
+								0 & \text{if $\lambda \notin [\lambda_{-}, \lambda_{+}]$}
+								\end{cases}
+								\]
+							</li>
+							<li>
+								With $\lambda_{-} = \sigma^{2}\left(1 - \sqrt{\frac{N}{T}}\right)^{2}$ and $\lambda_{+} = \sigma^{2}\left(1 + \sqrt{\frac{N}{T}}\right)^{2}$
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Random Matrix Theory</h3>
+					<table>
+						<thead>
+							<tr>
+								<th style="text-align:center">Eigenvalues</th>
+								<th style="text-align:center">Associated with</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="text-align:center">$\lambda \in [0, \lambda_{+}]$</td>
+								<td style="text-align:center">noise</td>
+							</tr>
+							<tr>
+								<td style="text-align:center">$\lambda \notin [0, \lambda_{+}]$</td>
+								<td style="text-align:center">signal</td>
+							</tr>
+						</tbody>
+					</table>
+					<iframe data-src="html_plots/RMT_ex.html" width=1000 height=1000 data-preload></iframe>
+					</section>
+					<section>
+						<h3>Process</h3>
+						<ul>
+							<li>
+								<b>Denoising</b>: Let $i$ be the position of the eigenvalue such that $i > \lambda_{+}$ and $i+1 \leq \lambda_{+}$.
+								Replace: $$\lambda_{j} = \frac{1}{N-i}\underset{k=i+1}{\overset{N}{\sum}}\lambda_{k} \hspace{0.5cm} \forall j \in
+								[i+1,N]$$
+							</li>
+							<li>
+								<b>Denoising Target Shrinkage</b>: Eigenvectors associated with noise are known, apply shrinkage only to these eigenvectors
+							</li>
+							<li>
+								Covariance matrix is retrieved by PCA
+							</li>
+							<li style="color:red">
+								These methods are normally applied to a (very) large number of assets...<br><small>(Here we have 9 strategies)</small>
+							</li>
+							<li>
+								More: <a target="_blank" rel="noopener noreferrer"
+									href="https://medium.com/swlh/an-empirical-view-of-marchenko-pastur-theorem-1f564af5603d">[code
+									snippets/blog]</a> (exactly the same snippets as in this <a target="_blank" rel="noopener noreferrer"
+									href="https://www.amazon.com/Machine-Learning-Managers-Elements-Quantitative/dp/1108792898">book</a>)
+							</li>
+						</ul>
+					</section>
+				</section>
+				<section data-transition="slide-in concave-out" id="Walk_forward_optim">
+					<h3>Walk Forward Optimisation Guidelines</h3>
+					<br>
+					<ul>
+						<li>
+							<font style="color:red">For all methods and declinaisons</font> (see next for methods summary)
+						</li>
+						<br>
+						<li>
+							For rolling in-sample window sizes <font style="color:red">$l \in [1M, 36M]$</font>
+						</li>
+						<br>
+						<li>
+							rolling out-sample window size <font style="color:red">always $1W$</font>
+						</li>
+						<br>
+						<li>
+							<font style="color:red">Same out-sample time series for all methods for fair comparisons:</font></li><br/>Starting $\hspace{0.2cm} \tilde{t}_0 = t_0 + 36M + 1W$, we have: <font style="color:red">$\hspace{0.2cm} T_{OS} = T - \tilde{t}_0$</font>
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="concave" id="Methods_params">
+					<h3>Methods Summary: parameters variants<br><small>(X: involved)</small></h3>
+					<br>
+					<table style="font-size:28px">
+						<thead>
+							<tr>
+								<th style="text-align:center">Method</th>
+								<th style="text-align:center">Cov:<br> Classic + <a href="#/Exp_cov">Exp.</a></th>
+								<th style="text-align:center"><a href="#/Shrinkages">Shrinkages</a>:<br> w/o + Others</th>
+								<th style="text-align:center"><a href="#/Hierarchical_methods">Clusters</a>:<br> Correl + CVaR</th>
+								<th style="text-align:center"><a href="#/Hierarchical_methods">Linkage</a>:<br> ward + single + ...</th>
+								<th style="text-align:center"><a href="#/Recursion">Recursion:</a><br>Bisection + Topdown</th>
+								<th style="text-align:center">$\alpha$:<br> $5\%$ + $10\%$</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th style="text-align:center"><a href="#/Markowitz">Max-Sharpe</a></th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+							</tr>
+							<tr>
+								<th style="text-align:center"><a href="#/Markowitz">Min-Variance</a></th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+							</tr>
+							<tr>
+								<th style="text-align:center"><a href="#/SRM">Min-CVaR</a></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center">X</th>
+							</tr>
+							<tr>
+								<th style="text-align:center"><a href="#/SRM">Min-Power</a></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center">X</th>
+							</tr>
+							<tr>
+								<th style="text-align:center"><a href="#/HRP">HRP</a></th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center"></th>
+							</tr>
+							<tr>
+								<th style="text-align:center"><a href="#/HARP">HARP</a></th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center"></th>
+							</tr>
+							<tr>
+								<th style="text-align:center"><a href="#/HCP">HCP</a></th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center">X</th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+							</tr>
+						</tbody>
+					</table>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="concave" id="Constraints">
+					<section>
+						<h3>Constraints $\Omega$</h3>
+						<ul>
+							<li>
+								All constraints are the same for each method
+							</li>
+							<li>
+								Full investment:
+								\[\begin{equation}
+								\underset{i=1}{\overset{N}{\sum}}w_i = 1
+								\end{equation} \]
+							</li>
+							<li>
+								Long-only and min/max allocation (pratical purpose):
+								\[\begin{equation}
+								w_i \in [5\%, 35\%] \hspace{1cm} \forall i \in [1, N]
+								\end{equation} \]
+							</li>
+						</ul>
+						<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+									data-src="images/home_logo.png"></a></p>
+					</section>
+					<section>
+						<ul>
+							<li>
+								Optimization: constraints as an argument of the optimiser
+							</li>
+							<br><br>
+							<li>
+								Otherwise, redistribution as ($N$ number of assets):
+								<ul>
+									<li>
+										$$\text{if} \hspace{0.2cm} \exists i \hspace{0.2cm} w_i > w_{max}, \forall j \ne i,
+										\hspace{0.2cm} w_j: = w_j +
+										\frac{w_i - w_{max}}{N-1} \hspace{0.2cm} \text{and} \hspace{0.2cm} w_i = w_{max}$$
+									</li>
+
+									<li>
+										$$\text{if} \hspace{0.2cm} \exists i \hspace{0.2cm} w_i < w_{min}, \forall j \ne i,
+											\hspace{0.2cm} w_j:=w_j - \frac{w_{min} - w_i}{N-1} \hspace{0.2cm} \text{and} \hspace{0.2cm}
+											w_i=w_{min}$$ </li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+				</section>
+				<section data-transition="concave" id="Stats_out_sample">
+					<h3>Statistics Out-Sample</h3>
+					<table style="font-size:35px">
+						<thead>
+							<tr>
+								<th style="text-align:center">Annualized Sharpe</th>
+								<th style="text-align:center">Concentration (Herfindahl index)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th style="text-align:center">$$S_{ann} = \frac{\mathbb{E}[R_{OS}]}{\sigma_{R_{OS}}}\sqrt{52}$$</th>
+								<th style="text-align:center">$$N(w) = \frac{1}{\underset{i=1}{\overset{N}{\sum}}w_{i}^{2}}$$</th>
+						</tbody>
+					</table>
+					<table style="font-size:35px">
+						<thead>
+							<tr>
+								<th style="text-align:center">Turnover<small>(Weekly)</small></th>
+								<th style="text-align:center">Maximum-Drawdown</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th style="text-align:center">$$TR =
+									\frac{1}{T_{OS}-1}\underset{t=\tilde{t}_0}{\overset{T-1}{\sum}}\underset{i=1}{\overset{N}{\sum}}\left|w_{i,t+1} -
+									w_{i,t}\right|$$</th>
+								<th style="text-align:center">(Computed on the refactorized performance (see after))</th>
+						</tbody>
+					</table>
+					<li>
+						<a target="_blank" rel="noopener noreferrer"
+							href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551">Deflated Sharpe Ratio</a> <a target="_blank" rel="noopener noreferrer"
+								href="https://gmarti.gitlab.io/qfin/2018/05/30/deflated-sharpe-ratio.html">[code snippets]
+								</a> to add
+					</li>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="concave-in slide-out" id="Intuitions">
+					<h3>Intuitions</h3>
+					<br>
+					<ul>
+						<li>
+							<a href="#/Recursion">Bisection</a>:
+							<ul>
+								<p></p>
+								<li>
+									Can affects assets to wrong clusters so doesn't make sense
+								</li>
+								<p></p>
+								<li>
+									<cefont style="color:red">(The more assets in the portfolio, the less dramatic it is)</font>
+								</li>
+							</ul>
+						</li>
+						<br>
+						<li>
+							<a href="#/Markowitz">Markowitz</a>:
+							<ul>
+								<p></p>
+								<li>
+									Known to be unstable out-sample (because of forecast returns deviations)
+								</li>
+								<li>
+									Covariance matrix easier to estimate, so risk-based like Min-Variance is generally preferred for stability
+								</li>
+							</ul>
+						</li>
+						<br>
+						<li>
+							<a href="#/Exp_cov">Exp. Covariance</a>:
+							<ul>
+								<p></p>
+								<li>
+									More reactive ? If yes with more turnovers...
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section id="Perfs"  data-transition="slide-in zoom-out">
+					<h3>Performances</h3>
+					<ul>
+						<li>
+							<font style="color:red">Graphics</font> perfs: <a href="#/Outsamplereturns">Returns out-sample</a> refactorized with vol objective of
+							$12\%$ $$Perf_{OS} = \underset{\tilde{t}_0}{\overset{T}{\prod}}\left( 1 + r_{t}\times\frac{12\%}{\sigma_{R_{OS}}} \right)$$
+						</li>
+						<br>
+						<li>
+							$1\,000\,000$ out-sample perfs with <font style="color:red">random weights to bound Sharpe ratio</font>:
+						</li>
+						<table style="font-size:35px">
+							<thead>
+								<tr>
+									<th style="text-align:center">Plot $1$ (leverage)</th>
+									<th style="text-align:center">Plot $2$</th>
+									<th style="text-align:center">Plot $3$ (our constraints)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th style="text-align:center">$w \sim \mathbb{U}[0,1]$</th>
+									<th style="text-align:center">$w \sim \mathbb{U}[0,1]$</th>
+									<th style="text-align:center">$w \sim \mathbb{U}[5\%,35\%]$</th>
+									<th style="text-align:center">$\in M_{T_{OS}, N}(\mathbb{R})$</th>
+							</tbody>
+							<tbody>
+								<tr>
+									<th style="text-align:center">$\underset{i=1}{\overset{N}{\sum}}w_i \ne 1$</th>
+									<th style="text-align:center">$\underset{i=1}{\overset{N}{\sum}}w_i = 1$</th>
+									<th style="text-align:center">$\underset{i=1}{\overset{N}{\sum}}w_i = 1$</th>
+							</tbody>
+						</table>
+						<br>
+						<li>
+							Then plots of all performances strategies (without shrinkage)
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="zoom-in concave-out">
+					<section>
+						<h3>Random Weights: Plot $1$ (leverage)</h3>
+						<table style="font-size:35px">
+							<thead>
+								<tr>
+									<th style="text-align:center">$w \in \mathcal{M}^{T_{OS}\times N} \sim \mathbb{U}[0,1]$,</th>
+									<th style="text-align:center">$\underset{i=1}{\overset{N}{\sum}}w_i \ne 1$,</th>
+									<th style="text-align:center">$1\,000\,000$ strats</th>
+								</tr>
+							</thead>
+						</table>
+						<p>
+							<img class="r-stretch" height="25%" width="55%" src="images/random_leverage.png">
+						</p>
+						<p>
+							<a href="#" class="navigate-down">
+								<img class="r-frame" style="background: rgba(255,255,255,0.1);" width="50" height="75"
+									data-src="https://static.slid.es/reveal/arrow.png" alt="Notes">
+							</a>
+						</p>
+					</section>
+					<section>
+						<h3>Random Weights: Plot $2$</h3>
+						<table style="font-size:35px">
+							<thead>
+								<tr>
+									<th style="text-align:center">$w \in \mathcal{M}^{T_{OS}\times N} \sim \mathbb{U}[0,1]$,</th>
+									<th style="text-align:center">$\underset{i=1}{\overset{N}{\sum}}w_i = 1$,</th>
+									<th style="text-align:center">$1\,000\,000$ strats</th>
+								</tr>
+							</thead>
+						</table>
+						<p>
+							<img class="r-stretch" height="25%" width="55%" src="images/random_0_1.png">
+						</p>
+						<p>
+							<a href="#" class="navigate-down">
+								<img class="r-frame" style="background: rgba(255,255,255,0.1);" width="50" height="75"
+									data-src="https://static.slid.es/reveal/arrow.png" alt="Notes">
+							</a>
+						</p>
+					</section>
+					<section>
+						<h3>Random Weights: Plot $3$ (our constrains)</h3>
+						<table style="font-size:35px">
+							<thead>
+								<tr>
+									<th style="text-align:center">$w \in \mathcal{M}^{T_{OS}\times N} \sim \mathbb{U}[5\%,35\%]$,</th>
+									<th style="text-align:center">$\underset{i=1}{\overset{N}{\sum}}w_i = 1$,</th>
+									<th style="text-align:center">$1\,000\,000$ strats</th>
+								</tr>
+							</thead>
+						</table>
+						<p>
+							<img class="r-stretch" height="25%" width="55%" src="images/random_our.png">
+						</p>
+					</section>
+				</section>
+				<section data-transition="concave">
+					<h3>Perfs Out-sample</h3>
+					<table style="font-size:35px">
+						<thead>
+							<tr>
+								<th style="text-align:center">No Shrinkage</th>
+								<th style="text-align:center">$l \in [1M, 36M]$</th>
+								<th style="text-align:center">$2988$ strats</th>
+							</tr>
+						</thead>
+					</table>
+					<p>
+						<img class="r-stretch" height="25%" width="55%" src="images/perfs_no_shrink_1_36.png">
+					</p>
+					<li>
+						We can see graphically the added value compared to the perfs with random weights
+					</li>
+				</section>
+				<section data-transition="concave-in slide-out">
+					<h3>Perfs Out-sample</h3>
+					<table style="font-size:28px">
+						<thead>
+							<tr>
+								<th style="text-align:center">No Shrinkage</th>
+								<th style="text-align:center">No <a href="#/Markowitz">Max-Sharpe</a></th>
+								<th style="text-align:center">No <a href="#/Recursion">Bisection</a></th>
+								<th style="text-align:center">No <a href="#/Exp_cov">Exp. Cov</a></th>
+								<th style="text-align:center">$l \in [12M, 36M]$</th>
+								<th style="text-align:center">$875$ strats</th>
+							</tr>
+						</thead>
+					</table>
+					<p>
+						<img class="r-stretch" height="25%" width="55%" src="images/perfs_no_shrink_1_12.png">
+					</p>
+					<li>
+						We can discard the strategies (w/o shrinkage here) that are worst than EW by following our <a href="#/Intuitions">intuitions</a></br><small>(Overall on Max-Sharpe and Bisection, not Exp. covariance)</small>
+					</li>
+				</section>
+				<section data-transition="slide">
+					<section id="Turnovers">
+						<h3>$TR = f(l)$</h3>
+						<li>
+							See <a href="#Intuitions">Intuitions</a>
+						</li>
+						<iframe data-src="html_plots/turnover_all.html" width=1600 height=1000 data-preload></iframe>
+						<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+									data-src="images/home_logo.png"></a></p>
+					</section>
+					<section>
+						<h3>$TR = f(l)$<br>Clustering</h3>
+						<iframe data-src="html_plots/turnover_clustering.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+				</section>
+				<section id="Box_plots" data-transition="slide-in zoom-out">
+					<h3>Box-plots analysis</h3>
+					<br>
+					<ul>
+						<li>
+							The goal is to <font style="color:red">detect patterns</font> while <font style="color:red">keeping the most informations in the plots</font>
+						</li>
+						<li>
+							Each box-plot represents the different windows lengths $l$
+						</li>
+						<li>
+							For each <a href="#/Methods_params">method involved</a>, without shrinkage (for the moment), comparison of:
+							<ul>
+								<li>
+									Covariance matrix: Classic vs. Exponential
+								</li>
+								<li>
+									Clustering: Correlation matrix vs. "CVaR" matrix
+								</li>
+								<li>
+									Recursion (hierarchical): Bisection vs. Topdown
+								</li>
+							</ul>
+						<br>
+						</li>
+						<li>
+							Then checkpoint and conclution
+						</li>
+						<li>
+							Then see if the shrinkage/denoising adds value in our case ? (we have just $9$ assets in portfolio)
+						</li>
+						<br>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="zoom-in concave-out">
+					<section>
+						<h3>Box-plots analysis<br>Covariance: Classic vs. Exponential</h3>
+						<p>Classic Covariance looks better ? <a href="#" class="navigate-down">(Press down)</a></p>
+						<iframe data-src="html_plots/boxplot_classic_exp_1_36.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+					<section>
+						<h3>Box-plots analysis<br>Covariance: Classic vs. Exponential</h3>
+						<p>Exp. Cov better for $l \in [1M, 11M]$ <a href="#" class="navigate-down">(Press down)</a></p></p>
+						<iframe data-src="html_plots/boxplot_classic_exp_1_11.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+					<section>
+						<h3>Box-plots analysis<br>Covariance: Classic vs. Exponential</h3>
+						<p>Classic Cov better for $l \in [12M, 36M]$</p>
+						<iframe data-src="html_plots/boxplot_classic_exp_12_36.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+				</section>
+				<section data-transition="concave">
+					<h3>Box-plots analysis<br>Clustering: Correlation vs. "CVaR" similarity matrix</h3>
+					<p>Correlation matrix / "CVaR" matrix for clusters: hard to differenciate</p>
+					<iframe data-src="html_plots/boxplot_correl_cvar_12_36.html" width=1600 height=1000 data-preload></iframe>
+				</section>
+				<section data-transition="concave">
+					<h3>Box-plots analysis<br>Recursion:Topdown vs. Bisection</h3>
+					<p>Topdown better, see <a href="#/Intuitions">Intuitions</a></p>
+					<iframe data-src="html_plots/boxplot_topdown_bisection_12_36.html" width=1600 height=1000 data-preload></iframe>
+				</section>
+				<section data-transition="concave">
+					<h3>Checkpoint: first conclusions</h3>
+					<ul>
+						<li>
+							<a href="Exp_cov">Exponential covariance</a> only for $l \in [1M, 11M]$ (but bigger turnovers)
+						</li>
+						<li>
+							Classic covariance only for $l \in [12M, 36M]$
+						</li>
+						<li>
+							We discard the bisection recursion, otherwise it will reduce the boxes of clustering methods
+						</li>
+						<li>
+							See next slide all strategies boxs-plots, with <a href="#/Shrinkages">shrinkage/denoising</a> and <a href="#/SRM">SRMs</a> methods
+						</li>
+					</ul>
+				</section>
+				<section data-transition="concave">
+					<h3>Box-plots analysis<br>All strategies with Exp. Cov, $l \in [1M, 11M]$, Correlation similarity</h3>
+					<p>Denoising decreases Sharpe (maybe not adapted with Exp. Cov)</p>
+					<iframe data-src="html_plots/boxplot_all_exp_cov_1_11.html" width=1600 height=1000 data-preload></iframe>
+				</section>
+				<section data-transition="concave-in slide-out">
+					<h3>Box-plots analysis<br>All strategies with Classic Cov, $l \in [12M, 36M]$, Correlation similarity</h3>
+					<p>Shrinkage doesn't add value</p>
+					<iframe data-src="html_plots/boxplot_all_classic_cov_12_36.html" width=1600 height=1000 data-preload></iframe>
+				</section>
+				<section id="Selection" data-transition="slide-in zoom-out">
+					<section>
+						<h3>Cases Study</h3>
+						<br>
+						<ul>
+							<li>
+								Go in-depth with $4$ strategies:
+								<br><p></p>
+								<table>
+									<thead style="font-size:30px">
+										<tr>
+											<th style="text-align:center">Methods</th>
+											<th style="text-align:center">Clusters with</th>
+											<th style="text-align:center">Linkage</th>
+											<th style="text-align:center">Recursion</th>
+											<th style="text-align:center">Covariance</th>
+											<th style="text-align:center">Shrinkage</th>
+										</tr>
+									</thead>
+									<tbody style="font-size:25px">
+										<tr>
+											<th style="text-align:center"><a href="#/HCP">HCP</a></th>
+											<th style="text-align:center"><a href="#/Hierarchical_methods">Correlation</a></th>
+											<th style="text-align:center"><a href="#/Hierarchical_methods">Ward</a></th>
+											<th style="text-align:center"><a href="#/Topdown">Topdown</a></th>
+											<th style="text-align:center"><a href="#/Exp_cov">Exponential</a></th>
+											<th style="text-align:center">No</th>
+										</tr>
+									</tbody>
+								</table>
+								<table>
+									<thead style="font-size:30px">
+										<tr>
+											<th style="text-align:center">Methods</th>
+											<th style="text-align:center">Clusters with</th>
+											<th style="text-align:center">Linkage</th>
+											<th style="text-align:center">Recursion</th>
+											<th style="text-align:center">Covariance</th>
+											<th style="text-align:center">Shrinkage</th>
+										</tr>
+									</thead>
+									<tbody style="font-size:25px">
+										<tr>
+											<th style="text-align:center"><a href="#/HARP">HARP</a></th>
+											<th style="text-align:center"><a href="#/Hierarchical_methods">Correlation</a></th>
+											<th style="text-align:center"><a href="#/Hierarchical_methods">Centroid</a></th>
+											<th style="text-align:center"><a href="#/Topdown">Topdown</a></th>
+											<th style="text-align:center">Classic</th>
+											<th style="text-align:center">No</th>
+										</tr>
+									</tbody>
+								</table>
+								<table>
+									<thead style="font-size:30px">
+										<tr>
+											<th style="text-align:center">Methods</th>
+											<th style="text-align:center">Covariance</th>
+											<th style="text-align:center">Shrinkage</th>
+										</tr>
+									</thead>
+									<tbody style="font-size:25px">
+										<tr>
+											<th style="text-align:center"><a href="#/Markowitz">Min-Variance</a></th>
+											<th style="text-align:center"><a href="#/Exp_cov">Exponential</a></th>
+											<th style="text-align:center"><a href="#/Shrinkages">OAS</a></th>
+										</tr>
+									</tbody>
+								</table>
+								<table>
+									<thead style="font-size:30px">
+										<tr>
+											<th style="text-align:center">Methods</th>
+											<th style="text-align:center">$\alpha$</th>
+										</tr>
+									</thead>
+									<tbody style="font-size:25px">
+										<tr>
+											<th style="text-align:center"><a href="#/SRM">Min-CVaR</a></th>
+											<th style="text-align:center">$5\%$</th>
+										</tr>
+									</tbody>
+								</table>
+							</li>
+							<br>
+							<li>
+								Analyse Out-sample performance and optimal weights
+							</li>
+							<li>
+								Analyse Out-sample Statistics <a href="#" class="navigate-down"><img class="r-frame" style="background: rgba(255,255,255,0.1); margin: 0 0 0 467px" width="70" height="100"
+									data-src="https://static.slid.es/reveal/arrow.png" alt="Notes"></a>
+							</li>
+						</ul>
+						<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+									data-src="images/home_logo.png"></a></p>
+					</section>
+					<section>
+						<h3>Spider Charts</h3>
+						<ul>
+							<li>
+								<a href="#/Stats_out_sample">Statistics</a> for the $4$ strategies aggreg by mean for:
+								<ul>
+									<li>
+										$l \in [1M, 11M]$ if <a href="#/Exp_cov">Exp. Cov</a> as parameter
+									</li>
+									<li>
+										$l \in [12M, 36M]$ otherwise
+									</li>
+								</ul>
+							</li>
+							<p></p>
+							<li>Opposite of TR and Vol before scaling (the less the better)</li>
+						</ul>
+						<p>
+							<img class="r-stretch" src="images/Schema_Stats.png">
+						</p>
+					</section>
+				</section>
+				<section data-transition="zoom-in concave-out">
+					<section>
+						<h3><a href="#/HCP">HCP</a></h3>
+						<iframe data-src="html_plots/HCP_perfs_weights.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+					<section>
+						<h3>Statistics</h3>
+						<iframe data-src="html_plots/HCP_spider.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+				</section>
+				<section data-transition="concave">
+					<section>
+						<h3><a href="#/HARP">HARP</a></h3>
+						<iframe data-src="html_plots/HARP_perfs_weights.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+					<section>
+						<h3>Statistics</h3>
+						<iframe data-src="html_plots/HARP_spider.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+				</section>
+				<section data-transition="concave">
+					<section>
+						<h3><a href="#/Markowitz">Min-Variance</a></h3>
+						<iframe data-src="html_plots/MinVariance_perfs_weights.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+					<section>
+						<h3>Statistics</h3>
+						<iframe data-src="html_plots/Min-Variance_spider.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+				</section>
+				<section data-transition="concave-in slide-out">
+					<section>
+						<h3><a href="#/SRM">Min-CVaR $5\%$</a></h3>
+						<iframe data-src="html_plots/MinCVar_perfs_weights.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+					<section>
+						<h3>Statistics</h3>
+						<iframe data-src="html_plots/Min-CVar_spider.html" width=1600 height=1000 data-preload></iframe>
+					</section>
+				</section>
+				<section data-transition="slide-in zoom-out" id="Boosting">
+					<h3>"Boosting"</h3>
+					<br><br>
+					<ul>
+						<li>
+							Why not considering the methods as "weak learners" and combine the weights ?<br><a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Wisdom_of_the_crowd">[wisdom of the crowd]</a>
+						</li>
+						<br><br>
+						<li>
+							More: Why not adding the weights into another model ? <a target="_blank" rel="noopener noreferrer"
+								href="https://machinelearningmastery.com/stacking-ensemble-machine-learning-with-python/">[Stacking]</a>
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="zoom-in concave-out">
+					<h3>"Boosting"</h3>
+					<iframe data-src="html_plots/Boosting_perfs_weights.html" width="1600" height="1000" data-preload></iframe>
+				</section>
+				<section data-transition="concave-in slide-out">
+					<h3>"Boosting"</h3>
+					<p>More consistent</p>
+					<iframe data-src="html_plots/Boosting_spider.html" width="1000" height="1000" data-preload></iframe>
+				</section>
+				<section data-transition="slide-in concave-out" id="Ideas">
+					<h3>Go Further / Ideas</h3>
+					<ul>
+						<li>
+							<font style="color:red">Imperative to carry out this study on several investment universes before generalising</font>
+						</li>
+						<li>
+							Walk-forward <font style="color:red">expanding optimisation</font> with <font style="color:red">market states</font> ? <a target="_blank" rel="noopener noreferrer" href="https://www.sciencedirect.com/science/article/abs/pii/S0957417420305443">
+								[paper]</a>
+						</li>
+						<li>
+							<font style="color:red">Causality instead of correlation</font> as similarity for clusters ? <a target="_blank" rel="noopener noreferrer"
+								href="https://arxiv.org/abs/2005.08543">
+								[paper]</a><br>See also <a target="_blank" rel="noopener noreferrer"
+									href="https://www.causalens.com/app/portfolio-optimization/">
+									[causaLens]</a>
+						</li>
+						<li>
+							Deep Learning framework (my crush): Sharpe ratio, or mixed metrics as cost function isn't so cool ? <a target="_blank" rel="noopener noreferrer" href="https://jfds.pm-research.com/content/early/2020/08/26/jfds.2020.1.042">[paper]</a><br> See also <a target="_blank" rel="noopener noreferrer" href="https://github.com/jankrepl/deepdow">[deepdow]</a>
+						</li>
+						<li>
+							Reinforcement Learning ! (Inevitable nowadays)
+							<ul>
+								<li>
+									Can be mixed with Deep Learning for the agent's action
+								</li>
+								<li>
+									Market states directly incorporated as the environment ?
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="concave" id="Implem_details">
+					<h3>Implementation details</h3>
+					<ul>
+						<li>
+							All in python <img data-src="images/python_logo.png" width=35 height=35 style="margin:0 0 0 0">
+						</li>
+						<li>
+							Packages used:
+							<ul>
+								<li>
+									Mandatory: numpy, pandas
+								</li>
+								<li>
+									ML/Optim: scikit-learn, scipy
+								</li>
+								<li>
+									Plots: matplotlib, seaborn, plotly
+								</li>
+								<li>
+									Others: itertools, tqdm, pickle, warnings
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+				<section data-transition="concave" id="Biblio">
+					<h3>Bibliography</h3>
+					<ul>
+						<li>
+							L. De Prado., (2016). <a target="_blank" rel="noopener noreferrer"
+						href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2708678">Building Diversified Portfolios that Outperform Out-of-Sample</a>.<br>Journal of Portfolio Management.
+						</li>
+						<li>
+							B. Hlavaty., (2017). Post-Modern Portfolio Construction. <br>JP Morgan Global Quantitative Strategies. (Provided in-house)
+						</li>
+						<li>
+							T. Raffinot., (2019). <a target="_blank" rel="noopener noreferrer" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2840729">Hierarchical Clustering Based Asset Allocation</a>. <br>Journal of Portfolio Management.
+						</li>
+						<li>
+							L. De Prado., (2018). <a target="_blank" rel="noopener noreferrer" href="https://www.amazon.fr/Advances-Financial-Machine-Learning-Lopez/dp/1119482089">Advances in Financial Machine Learning</a>. <br>John Wiley
+							& Sons.
+						</li>
+						<li>
+							L. De Prado., (2020). <a target="_blank" rel="noopener noreferrer"
+								href="https://www.amazon.fr/Machine-Learning-Asset-Managers-Marcos/dp/1108792898">Machine Learning for Asset Managers</a>. <br>Cambridge University Press.
+						</li>
+					</ul>
+					<p style="position:absolute; left:75vw; top:-2.5vh"><a href="#/Home"><img class="r-stretch" width="40" height="37"
+								data-src="images/home_logo.png"></a></p>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				center: true,
+				width: "100%",
+				height: "100%",
+				transition: 'slide',  // none/fade/slide/concave/convex/zoom  even fade-in slide-out for example
+				transistionSpeed: 'default', // default/fast/slow
+				backgroundTransition: 'fade', // none/fade/slide/concave/convex/zoom
+				// We can make the configuration here
+				// Learn about plugins: https://revealjs.com/plugins/
+				math: {
+					mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
+					config: 'TeX-AMS_HTML-full',
+					// pass other options into `MathJax.Hub.Config()`
+					TeX: { Macros: { RR: "{\\bf R}" } }
+				},
+				plugins: [ RevealMarkdown, RevealHighlight,
+				RevealNotes, RevealMath ]
+			});
+		</script>
+	</body>
+</html>
