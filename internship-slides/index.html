@@ -815,14 +815,26 @@
 							<li>
 								Covariance matrix is retrieved by PCA
 							</li>
-							<li style="color:red">
-								These methods are normally applied to a (very) large number of assets...<br><small>(Here we have 9 strategies)</small>
-							</li>
 							<li>
 								More: <a target="_blank" rel="noopener noreferrer"
 									href="https://medium.com/swlh/an-empirical-view-of-marchenko-pastur-theorem-1f564af5603d">[code
 									snippets/blog]</a> (exactly the same snippets as in this <a target="_blank" rel="noopener noreferrer"
 									href="https://www.amazon.com/Machine-Learning-Managers-Elements-Quantitative/dp/1108792898">book</a>)
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Criticism</h3>
+						<ul>
+							<li style="color:red">
+								These methods are normally applied to a (very) large number of assets...<br><small>(Here we have 9
+									strategies)</small>
+							</li>
+							<li>
+								Intuition: Because correlations are more likely to be noisy if the ratio of $T$ to $N$ is small (i.e if the finite time series length is small compared to the number of assets)
+							</li>
+							<li>
+								But let's see the results in our case
 							</li>
 						</ul>
 					</section>
