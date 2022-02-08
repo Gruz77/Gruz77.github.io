@@ -279,6 +279,20 @@ a:focus {
     -o-background-size: cover;
 }
 
+.cryptoanalysis-section {
+    width: 100%;
+    padding: 50px 0;
+    color: #fff;
+    background: url(../img/canyonland.jpg) no-repeat bottom center scroll;
+    /* background: url(../img/He.jpeg) no-repeat center center scroll; */
+    /* background-color: rgb(54, 32, 32); */
+    background-color: #09061a;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
 #map {
     width: 100%;
     height: 200px;
